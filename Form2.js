@@ -1,40 +1,60 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   /* =========================
-     SALUDO HTML
+     SALUDO NOMBRE / COMPANY
      ========================= */
 
   var nombreInput = document.querySelector(".NOMBRE input");
   var companyInput = document.querySelector(".COMPANY input");
 
-  var nombre = "";
+  var saludoBloque = Array.from(
+    document.querySelectorAll("li label, li div, div")
+  ).find(function (el) {
 
-  if (nombreInput && nombreInput.value.trim() !== "") {
-    nombre = nombreInput.value.trim();
-  }
+    return (
+      el.innerHTML &&
+      el.innerHTML.includes("${Nombre_Apellido}")
+    );
 
-  if (!nombre && companyInput && companyInput.value.trim() !== "") {
-    nombre = companyInput.value.trim();
-  }
+  });
 
-  if (!nombre) {
-    nombre = "Cliente";
-  }
+  if (saludoBloque) {
 
-  /* Buscar el HTML que contiene ${Nombre_Apellido} */
-  var bloques = document.querySelectorAll("div");
+    var nombre = "";
 
-  bloques.forEach(function(div) {
+    // Prioridad: Nombre
+    if (
+      nombreInput &&
+      nombreInput.value.trim() !== ""
+    ) {
 
-    if (div.innerHTML.includes("${Nombre_Apellido}")) {
+      nombre = nombreInput.value.trim();
 
-      div.innerHTML = div.innerHTML.replace(
+    }
+
+    // Si no hay nombre, usar company
+    if (
+      !nombre &&
+      companyInput &&
+      companyInput.value.trim() !== ""
+    ) {
+
+      nombre = companyInput.value.trim();
+
+    }
+
+    // Fallback
+    if (!nombre) {
+      nombre = "Cliente";
+    }
+
+    // Reemplazar variable
+    saludoBloque.innerHTML =
+      saludoBloque.innerHTML.replace(
         "${Nombre_Apellido}",
         nombre
       );
 
-    }
-
-  });
+  }
 
 });
